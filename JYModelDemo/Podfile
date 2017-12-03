@@ -1,0 +1,7 @@
+platform :ios, '8.0'
+
+target 'JYModelDemo' do
+    pod 'JYModel', :path => '../'
+    pod 'AFNetworking'
+    pod 'YYModel'
+end
