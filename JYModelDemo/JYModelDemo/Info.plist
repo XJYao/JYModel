@@ -39,7 +39,7 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
-	<key>ProjectDir</key>
+	<key>ProjectPath</key>
 	<string>$(SRCROOT)/$(PROJECT_NAME)</string>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>

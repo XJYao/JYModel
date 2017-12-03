@@ -24,7 +24,6 @@
 @property (nonatomic, assign) NSInteger identifier;
 @property (nonatomic, copy) NSString *name;
 /* JYModel auto generate end, don't change this note! */
-
 @end
 
 @interface hahaha : NSObject

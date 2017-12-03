@@ -12,10 +12,10 @@
 
 + (NSString *)classHeadFilePath {
     NSString *infoPlistPath = [[NSBundle mainBundle]pathForResource:@"Info.plist" ofType:nil];
-    NSDictionary *infoDict = [NSDictionary dictionaryWithContentsOfFile: infoPlistPath];
-    NSString *projectDir = infoDict[@"ProjectDir"];
-    NSString *modelClassFilePath = [NSString stringWithFormat:@"%@/%@.h", projectDir, NSStringFromClass([self class])];
-    return modelClassFilePath;
+    NSDictionary *infoDict = [NSDictionary dictionaryWithContentsOfFile:infoPlistPath];
+    NSString *projectPath = [infoDict objectForKey:@"ProjectPath"];
+    NSString *filePath = [NSString stringWithFormat:@"%@/%@.h", projectPath, NSStringFromClass([self class])];
+    return filePath;
 }
 
 + (NSDictionary *)customClassForKeyMapper {
