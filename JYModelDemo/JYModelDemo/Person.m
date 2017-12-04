@@ -24,11 +24,26 @@
 }
 
 + (NSDictionary *)customClassForKeyMapper {
-    return @{@"school" : @"School"};
+    return @{@"school" : @"School",
+             @"gender" : @"PersonGender"};
 }
 
 + (NSDictionary *)customPropertyNameForKeyMapper {
     return @{@"id" : @"identifier"};
+}
+
++ (NSDictionary *)customNoteForKeyMapper {
+    return @{@"name" : @"The student's name.",
+             @"age" : @"The student's age.",
+             @"gender" : @"The student's gender. 0 is boy, 1 is girl.",
+             @"isStudent" : @"is he student?",
+             @"height" : @"The student's height. cm",
+             @"id" : @"The student's identifier",
+             };
+}
+
++ (NSDictionary *)customModificationForKeyMapper {
+    return @{@"age" : @"nonatomic, assign, readonly"};
 }
 
 @end

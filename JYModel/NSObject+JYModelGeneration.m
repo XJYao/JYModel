@@ -165,6 +165,16 @@
         customPropertyNameForKey = [(id<JYModelGeneration>)selfClass customPropertyNameForKeyMapper];
     }
     
+    NSDictionary *customNoteForKey = nil;
+    if ([selfClass respondsToSelector:@selector(customNoteForKeyMapper)]) {
+        customNoteForKey = [(id<JYModelGeneration>)selfClass customNoteForKeyMapper];
+    }
+    
+    NSDictionary *customModificationForKey = nil;
+    if ([selfClass respondsToSelector:@selector(customModificationForKeyMapper)]) {
+        customModificationForKey = [(id<JYModelGeneration>)selfClass customModificationForKeyMapper];
+    }
+    
     NSMutableArray *properties = [[NSMutableArray alloc] init];
     for (NSString *name in allPropertyNames) {
         if ([self paramError:name cls:NSStringClass]) {
@@ -185,17 +195,14 @@
                 clsName = @"NSArray";
                 isPoint = YES;
             } else if ([value isKindOfClass:NSDictionaryClass]) {
+                key = @"strong";
+                clsName = @"NSDictionary";
+                isPoint = YES;
                 
                 NSString *customClass = [customClassForKey objectForKey:name];
-                if ([self paramError:customClass cls:NSStringClass]) {
-                    customClass = @"NSDictionary";
-                } else {
+                if (![self paramError:customClass cls:NSStringClass]) {
                     [NSClassFromString(customClass) autoGeneratePropertiesWithJSONDict:value];
                 }
-                
-                key = @"strong";
-                clsName = customClass;
-                isPoint = YES;
             } else if ([value isKindOfClass:NSNumberClass]) {
                 const char *type = ((NSNumber *)value).objCType;
                 
@@ -291,11 +298,30 @@
                 }
             }
         }
+        //name
         NSString *propertyName = [customPropertyNameForKey objectForKey:name];
         if ([self paramError:propertyName cls:NSStringClass]) {
             propertyName = name;
         }
-        [properties addObject:[self propertyWithName:propertyName clsName:clsName key:key isPoint:isPoint]];
+        
+        //class
+        NSString *customClass = [customClassForKey objectForKey:name];
+        if (![self paramError:customClass cls:NSStringClass]) {
+            clsName = customClass;
+        }
+        
+        //note
+        NSString *customNote = [customNoteForKey objectForKey:name];
+        
+        //modification
+        NSString *customModification = [customModificationForKey objectForKey:name];
+        if (![self paramError:customModification cls:NSStringClass]) {
+            key = [NSString stringWithFormat:@"(%@)", customModification];
+        } else {
+            key = [NSString stringWithFormat:@"(nonatomic, %@)", key];
+        }
+        
+        [properties addObject:[self propertyWithName:propertyName clsName:clsName key:key isPoint:isPoint note:customNote]];
     }
     
     NSString *propertiesString = [properties componentsJoinedByString:@"\n\n"];
@@ -361,8 +387,13 @@
     return propertiesString;
 }
 
-+ (NSString *)propertyWithName:(NSString *)name clsName:(NSString *)clsName key:(NSString *)key isPoint:(BOOL)isPoint {
-    return [NSString stringWithFormat:@"/**\n<#Description#>\n*/\n@property (nonatomic, %@) %@ %@%@;", key, clsName, isPoint ? @"*" : @"", name];
++ (NSString *)propertyWithName:(NSString *)name clsName:(NSString *)clsName key:(NSString *)key isPoint:(BOOL)isPoint note:(NSString *)note {
+    if ([self paramError:note cls:[NSString class]]) {
+        note = @"/**\n<#Description#>\n*/";
+    } else {
+        note = [NSString stringWithFormat:@"/**\n%@\n*/", note];
+    }
+    return [NSString stringWithFormat:@"%@\n@property %@ %@ %@%@;", note, key, clsName, isPoint ? @"*" : @"", name];
 }
 
 + (id)subJSONObjectWithKey:(NSString *)key jsonDict:(NSDictionary *)jsonDict {

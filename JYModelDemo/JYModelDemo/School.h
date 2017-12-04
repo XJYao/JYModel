@@ -9,5 +9,18 @@
 #import <Foundation/Foundation.h>
 
 @interface School : NSObject
+/* JYModel auto generate begin, don't change this note! */
+
+/**
+<#Description#>
+*/
+@property (nonatomic, copy) NSString *city;
+
+/**
+<#Description#>
+*/
+@property (nonatomic, copy) NSString *schoolName;
+
+/* JYModel auto generate end, don't change this note! */
 
 @end
