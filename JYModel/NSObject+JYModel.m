@@ -60,6 +60,7 @@
     }
 #else
     shouldAutoWriting = NO;
+    JYModelNSLog(@"JYModel ERROR: If you want to write to head file automatically, please use simulator!");
 #endif
     
     NSString *headFilePath = nil;
