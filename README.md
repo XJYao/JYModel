@@ -99,13 +99,42 @@ NSLog(@"%@", result);
 Print:
 ```
 /* JYModel auto generate begin, don't change this note! */
+
+/**
+<#Description#>
+*/
 @property (nonatomic, assign) NSInteger gender;
+
+/**
+<#Description#>
+*/
 @property (nonatomic, assign) double height;
+
+/**
+<#Description#>
+*/
 @property (nonatomic, strong) School *school;
+
+/**
+<#Description#>
+*/
 @property (nonatomic, assign) NSInteger identifier;
+
+/**
+<#Description#>
+*/
 @property (nonatomic, assign) NSInteger age;
+
+/**
+<#Description#>
+*/
 @property (nonatomic, assign) BOOL isStudent;
+
+/**
+<#Description#>
+*/
 @property (nonatomic, copy) NSString *name;
+
 /* JYModel auto generate end, don't change this note! */
 ```
 
@@ -211,13 +240,42 @@ NSLog(@"%@", result);
 打印结果:
 ```
 /* JYModel auto generate begin, don't change this note! */
+
+/**
+<#Description#>
+*/
 @property (nonatomic, assign) NSInteger gender;
+
+/**
+<#Description#>
+*/
 @property (nonatomic, assign) double height;
+
+/**
+<#Description#>
+*/
 @property (nonatomic, strong) School *school;
+
+/**
+<#Description#>
+*/
 @property (nonatomic, assign) NSInteger identifier;
+
+/**
+<#Description#>
+*/
 @property (nonatomic, assign) NSInteger age;
+
+/**
+<#Description#>
+*/
 @property (nonatomic, assign) BOOL isStudent;
+
+/**
+<#Description#>
+*/
 @property (nonatomic, copy) NSString *name;
+
 /* JYModel auto generate end, don't change this note! */
 ```
 
