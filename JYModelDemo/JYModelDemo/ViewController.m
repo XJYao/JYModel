@@ -7,7 +7,7 @@
 //
 
 #import "ViewController.h"
-#import "Coach.h"
+#import "Person.h"
 
 #import <JYModel/JYModel.h>
 
@@ -23,7 +23,7 @@
     
     NSString *json = @"{\"data\" : {\"list\" : {\"name\" : \"Tom\", \"age\" : 21, \"gender\" : 1, \"isStudent\" : true, \"height\" : 180.3, \"id\" : 14124897432759830, \"school\" : {\"schoolName\" : \"what?\", \"city\" : {\"cityName\" : \"Beijing\"}}}}}";
     
-    NSString *result = [Coach autoGeneratePropertiesWithJSONString:json];
+    NSString *result = [Person autoGeneratePropertiesWithJSONString:json];
     NSLog(@"%@", result);
 }
 

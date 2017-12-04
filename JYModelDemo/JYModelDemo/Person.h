@@ -1,5 +1,5 @@
 //
-//  Coach.h
+//  Person.h
 //  JYModelDemo
 //
 //  Created by XJY on 2017/12/2.
@@ -14,7 +14,7 @@
 /* JYModel auto generate end, don't change this note! */
 @end
 
-@interface Coach : NSObject
+@interface Person : NSObject
 
 @end
 

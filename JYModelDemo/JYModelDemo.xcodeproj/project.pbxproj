@@ -17,7 +17,7 @@
 		56FFEC861FD29A980035E8C2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 56FFEC851FD29A980035E8C2 /* main.m */; };
 		56FFEC901FD29A980035E8C2 /* JYModelDemoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 56FFEC8F1FD29A980035E8C2 /* JYModelDemoTests.m */; };
 		56FFEC9B1FD29A990035E8C2 /* JYModelDemoUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 56FFEC9A1FD29A990035E8C2 /* JYModelDemoUITests.m */; };
-		56FFECAA1FD2AD2D0035E8C2 /* Coach.m in Sources */ = {isa = PBXBuildFile; fileRef = 56FFECA91FD2AD2D0035E8C2 /* Coach.m */; };
+		56FFECAA1FD2AD2D0035E8C2 /* Person.m in Sources */ = {isa = PBXBuildFile; fileRef = 56FFECA91FD2AD2D0035E8C2 /* Person.m */; };
 		E0090FF5C3BCD47D4A113AE1 /* libPods-JYModelDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADB764FBE3A928AE4112FF87 /* libPods-JYModelDemo.a */; };
 /* End PBXBuildFile section */
 
@@ -60,8 +60,8 @@
 		56FFEC961FD29A990035E8C2 /* JYModelDemoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = JYModelDemoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		56FFEC9A1FD29A990035E8C2 /* JYModelDemoUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JYModelDemoUITests.m; sourceTree = "<group>"; };
 		56FFEC9C1FD29A990035E8C2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		56FFECA81FD2AD2D0035E8C2 /* Coach.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Coach.h; sourceTree = "<group>"; };
-		56FFECA91FD2AD2D0035E8C2 /* Coach.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Coach.m; sourceTree = "<group>"; };
+		56FFECA81FD2AD2D0035E8C2 /* Person.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Person.h; sourceTree = "<group>"; };
+		56FFECA91FD2AD2D0035E8C2 /* Person.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Person.m; sourceTree = "<group>"; };
 		9372E47AAFF2708BC9FD73D4 /* Pods-JYModelDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JYModelDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-JYModelDemo/Pods-JYModelDemo.debug.xcconfig"; sourceTree = "<group>"; };
 		ADB764FBE3A928AE4112FF87 /* libPods-JYModelDemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-JYModelDemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -135,8 +135,8 @@
 				56FFEC811FD29A980035E8C2 /* LaunchScreen.storyboard */,
 				56FFEC841FD29A980035E8C2 /* Info.plist */,
 				56FFEC851FD29A980035E8C2 /* main.m */,
-				56FFECA81FD2AD2D0035E8C2 /* Coach.h */,
-				56FFECA91FD2AD2D0035E8C2 /* Coach.m */,
+				56FFECA81FD2AD2D0035E8C2 /* Person.h */,
+				56FFECA91FD2AD2D0035E8C2 /* Person.m */,
 				56249BB91FD3FE3500B02592 /* School.h */,
 				56249BBA1FD3FE3500B02592 /* School.m */,
 				56249BBC1FD40FD700B02592 /* City.h */,
@@ -358,7 +358,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				56FFECAA1FD2AD2D0035E8C2 /* Coach.m in Sources */,
+				56FFECAA1FD2AD2D0035E8C2 /* Person.m in Sources */,
 				56249BBB1FD3FE3500B02592 /* School.m in Sources */,
 				56249BBE1FD40FD700B02592 /* City.m in Sources */,
 				56FFEC7B1FD29A980035E8C2 /* ViewController.m in Sources */,
