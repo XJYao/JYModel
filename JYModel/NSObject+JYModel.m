@@ -289,10 +289,6 @@
         [properties addObject:[self propertyWithName:name clsName:clsName key:key isPoint:isPoint]];
     }
     
-    if (properties.count == 0) {
-        return nil;
-    }
-    
     NSString *propertiesString = [properties componentsJoinedByString:@"\n"];
     propertiesString = [NSString stringWithFormat:@"%@\n%@\n%@", kBeginNote, propertiesString, kEndNote];
     
