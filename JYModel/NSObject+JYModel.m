@@ -11,73 +11,91 @@
 
 @implementation NSObject (JYModel)
 
+#ifdef DEBUG
+#define JYModelNSLog(...) NSLog(__VA_ARGS__)
+#else
+#define JYModelNSLog(...)
+#endif
+
 #define kBeginNote @"/* JYModel auto generate begin, don't change this note! */"
 #define kEndNote @"/* JYModel auto generate end, don't change this note! */"
 
-+ (BOOL)autoGeneratePropertiesWithJSONString:(NSString *)jsonString {
++ (NSString *)autoGeneratePropertiesWithJSONString:(NSString *)jsonString {
     if ([self paramError:jsonString cls:[NSString class]]) {
-        return NO;
+        JYModelNSLog(@"JYModel ERROR: JSON string is nil or is not kind of NSString");
+        return nil;
     }
     return [self autoGeneratePropertiesWithJSONData:[jsonString dataUsingEncoding:NSUTF8StringEncoding]];
 }
 
-+ (BOOL)autoGeneratePropertiesWithJSONDict:(NSDictionary *)jsonDict {
++ (NSString *)autoGeneratePropertiesWithJSONDict:(NSDictionary *)jsonDict {
     if ([self paramError:jsonDict cls:[NSDictionary class]]) {
-        return NO;
+        JYModelNSLog(@"JYModel ERROR: JSON dict is nil or is not kind of NSDictionary");
+        return nil;
     }
     
     NSError *jsonError = nil;
     NSData *data = [NSJSONSerialization dataWithJSONObject:jsonDict options:0 error:&jsonError];
     if ([self paramError:data cls:[NSData class]] || ![self isObjectNull:jsonError]) {
-        return NO;
+        JYModelNSLog(@"JYModel ERROR: JSON is wrong with reason: %@", jsonError.localizedDescription);
+        return nil;
     }
     return [self autoGeneratePropertiesWithJSONData:data];
 }
 
-+ (BOOL)autoGeneratePropertiesWithJSONData:(NSData *)data {
++ (NSString *)autoGeneratePropertiesWithJSONData:(NSData *)data {
     Class NSDataClass = [NSData class];
     if ([self paramError:data cls:NSDataClass]) {
-        //Data is nil or is not kind of NSData.
-        return NO;
+        JYModelNSLog(@"JYModel ERROR: JSON data is nil or is not kind of NSData");
+        return nil;
     }
     
     Class selfClass = [self class];
+    Class NSStringClass = [NSString class];
+    
+    BOOL shouldAutoWriting = YES;
+#if TARGET_OS_SIMULATOR
+    if ([selfClass respondsToSelector:@selector(shouldAutoWritingProperties)]) {
+        shouldAutoWriting = [(id<JYModel>)selfClass shouldAutoWritingProperties];
+    }
+#else
+    shouldAutoWriting = NO;
+#endif
     
     NSString *headFilePath = nil;
-    if ([selfClass respondsToSelector:@selector(classHeadFilePath)]) {
-        headFilePath = [(id<JYModel>)selfClass classHeadFilePath];
-    }
-    
-    Class NSStringClass = [NSString class];
-    if ([self paramError:headFilePath cls:NSStringClass]) {
-        //Head file path is nil or is not kind of NSString.
-        return NO;
-    }
-    if (![[NSFileManager defaultManager] fileExistsAtPath:headFilePath]) {
-        //Head file path is not exist.
-        return NO;
-    }
-    if (![[NSFileManager defaultManager] isWritableFileAtPath:headFilePath]) {
-        //Head file is not writable.
-        return NO;
-    }
-    NSError *readFileError = nil;
-    NSString *headFileContent = [NSString stringWithContentsOfFile:headFilePath encoding:NSUTF8StringEncoding error:&readFileError];
-    if ([self paramError:headFileContent cls:NSStringClass] || ![self isObjectNull:readFileError]) {
-        //There is something wrong for reading head file.
-        return NO;
+    NSString *headFileContent = nil;
+    if (shouldAutoWriting) {
+        if ([selfClass respondsToSelector:@selector(classHeadFilePath)]) {
+            headFilePath = [(id<JYModel>)selfClass classHeadFilePath];
+        }
+        if ([self paramError:headFilePath cls:NSStringClass]) {
+            JYModelNSLog(@"JYModel ERROR: Head file path is nil or is not kind of NSString");
+            shouldAutoWriting = NO;
+        } else if (![[NSFileManager defaultManager] fileExistsAtPath:headFilePath]) {
+            JYModelNSLog(@"JYModel ERROR: Head file path is not exist");
+            shouldAutoWriting = NO;
+        } else if (![[NSFileManager defaultManager] isWritableFileAtPath:headFilePath]) {
+            JYModelNSLog(@"JYModel ERROR: Head file is not writable");
+            shouldAutoWriting = NO;
+        }
+        NSError *readFileError = nil;
+        headFileContent = [NSString stringWithContentsOfFile:headFilePath encoding:NSUTF8StringEncoding error:&readFileError];
+        if ([self paramError:headFileContent cls:NSStringClass] || ![self isObjectNull:readFileError]) {
+            JYModelNSLog(@"JYModel ERROR: There is something wrong for reading head file with reason: %@", readFileError.localizedDescription);
+            shouldAutoWriting = NO;
+        }
     }
     
     NSError *jsonError = nil;
     id jsonObject = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&jsonError];
     if ([self isObjectNull:jsonObject] || ![self isObjectNull:jsonError]) {
-        //There is something wrong for parsing JSON.
-        return NO;
+        JYModelNSLog(@"JYModel ERROR: There is something wrong for parsing JSON with reason: %@", jsonError.localizedDescription);
+        return nil;
     }
     Class NSDictionaryClass = [NSDictionary class];
     if (![jsonObject isKindOfClass:NSDictionaryClass]) {
-        //JSON is not king of NSDictionary.
-        return NO;
+        JYModelNSLog(@"JYModel ERROR: JSON is not king of NSDictionary");
+        return nil;
     }
     
     NSDictionary *jsonDict = (NSDictionary *)jsonObject;
@@ -92,7 +110,8 @@
     if (![self paramError:startKeyPath cls:NSStringClass]) {
         NSArray *startKeys = [startKeyPath componentsSeparatedByString:@"->"];
         if (startKeys.count == 0) {
-            return NO;
+            JYModelNSLog(@"JYModel ERROR: I don't know which key you want to start with");
+            return nil;
         }
         id subJSONObject = (id)jsonDict;
         BOOL isJSONArray = NO;
@@ -102,10 +121,12 @@
             
             if ([self paramError:subJSONObject cls:NSDictionaryClass]) {
                 if (i != startKeys.count - 1) {
-                    return NO;
+                    JYModelNSLog(@"JYModel ERROR: The key path that you want to start is wrong");
+                    return nil;
                 }
                 if ([self paramError:subJSONObject cls:NSArrayClass]) {
-                    return NO;
+                    JYModelNSLog(@"JYModel ERROR: The key path that you want to start is wrong");
+                    return nil;
                 }
                 //Maybe it's an array.
                 isJSONArray = YES;
@@ -121,7 +142,8 @@
                 }
             }
             if (!found) {
-                return NO;
+                JYModelNSLog(@"JYModel ERROR: The key path that you want to start is wrong");
+                return nil;
             }
         } else {
             jsonDict = (NSDictionary *)subJSONObject;
@@ -266,8 +288,15 @@
         [properties addObject:[self propertyWithName:name clsName:clsName key:key isPoint:isPoint]];
     }
     
-    if ([self paramError:properties cls:NSArrayClass]) {
-        return NO;
+    if (properties.count == 0) {
+        return nil;
+    }
+    
+    NSString *propertiesString = [properties componentsJoinedByString:@"\n"];
+    propertiesString = [NSString stringWithFormat:@"%@\n%@\n%@", kBeginNote, propertiesString, kEndNote];
+    
+    if (!shouldAutoWriting || [self paramError:headFilePath cls:NSStringClass] || [self paramError:headFileContent cls:NSStringClass]) {
+        return propertiesString;
     }
     
     NSMutableArray *components = [headFileContent componentsSeparatedByString:@"\n"].mutableCopy;
@@ -303,7 +332,8 @@
         }
     }
     if (interfaceIndexInSelfClass == NSNotFound) {
-        return NO;
+        JYModelNSLog(@"JYModel ERROR: I don't know where I can write, I can't find %@ Interface.", NSStringFromClass(selfClass));
+        return propertiesString;
     }
     NSInteger insertIndex = interfaceIndexInSelfClass + 1;
     
@@ -313,14 +343,16 @@
         [components removeObjectsInRange:NSMakeRange(beginNoteIndexInSelfClass, endNoteIndexInSelfClass - beginNoteIndexInSelfClass + 1)];
     }
     
-    //Write properties to head file.
-    NSString *propertiesString = [properties componentsJoinedByString:@"\n"];
-    propertiesString = [NSString stringWithFormat:@"%@\n%@\n%@", kBeginNote, propertiesString, kEndNote];
-    
+    //Update file content.
     [components insertObject:propertiesString atIndex:insertIndex];
     
+    //Write file content to head file.
     NSData *newFileData = [[components componentsJoinedByString:@"\n"] dataUsingEncoding:NSUTF8StringEncoding];
-    return [newFileData writeToURL:[NSURL fileURLWithPath:headFilePath] atomically:YES];
+    BOOL writeSuccess = [newFileData writeToURL:[NSURL fileURLWithPath:headFilePath] atomically:YES];
+    if (!writeSuccess) {
+        JYModelNSLog(@"JYModel ERROR: There is something wrong for writing to head file.");
+    }
+    return propertiesString;
 }
 
 + (NSString *)propertyWithName:(NSString *)name clsName:(NSString *)clsName key:(NSString *)key isPoint:(BOOL)isPoint {

@@ -23,7 +23,8 @@
     
     NSString *json = @"{\"data\" : {\"list\" : {\"name\" : \"Tom\", \"age\" : 21, \"gender\" : 1, \"isStudent\" : true, \"height\" : 180.3, \"identifier\" : 14124897432759830, \"school\" : {\"schoolName\" : \"what?\", \"city\" : {\"cityName\" : \"Beijing\"}}}}}";
     
-    [Coach autoGeneratePropertiesWithJSONData:[json dataUsingEncoding:NSUTF8StringEncoding]];
+    NSString *result = [Coach autoGeneratePropertiesWithJSONData:[json dataUsingEncoding:NSUTF8StringEncoding]];
+    NSLog(@"%@", result);
 }
 
 

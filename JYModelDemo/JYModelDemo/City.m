@@ -18,4 +18,8 @@
     return filePath;
 }
 
++ (BOOL)shouldAutoWritingProperties {
+    return NO;
+}
+
 @end

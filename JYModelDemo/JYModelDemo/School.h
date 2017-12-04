@@ -9,4 +9,5 @@
 #import <Foundation/Foundation.h>
 
 @interface School : NSObject
+
 @end
