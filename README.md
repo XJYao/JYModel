@@ -81,7 +81,7 @@ There is a JSON:
 
 7. In School.m, repeat the above steps if necessary.
 
-8. Finally, call 'autoGeneratePropertiesWithJSONString'、'autoGeneratePropertiesWithJSONDict' or 'autoGeneratePropertiesWithJSONData' depend on what kind of your JSON data.
+8. Finally, call 'autoGeneratePropertiesWithJSONString'、'autoGeneratePropertiesWithJSONDict' or 'autoGeneratePropertiesWithJSONData' depend on what kind of your JSON data. It will return the result. If result is nil, there are something wrong.
 
 ```
 NSString *result = [Person autoGeneratePropertiesWithJSONString:json];
