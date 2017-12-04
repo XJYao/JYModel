@@ -72,7 +72,7 @@ There is a JSON:
 }
 ```
 
-5. I need to let it know I want to use 'School' class for "school". Implement 'customClassForKeyMapper' in Person.m, return the mapper with NSDictionary (key is name, value is class name).
+5. I need to let it know I want to use 'School' class for "school". Implement 'customClassForKeyMapper' in Person.m, return the mapper with NSDictionary (key is name, value is class name). It supports enum.
 
 ```
 + (NSDictionary *)customClassForKeyMapper {
@@ -88,9 +88,32 @@ There is a JSON:
 }
 ```
 
-7. In School.m, repeat the above steps if necessary.
+7. If you want to add note, implement 'customNoteForKeyMapper' in Person.m, return the mapper with NSDictionary (key is name, value is note).
 
-8. Finally, call 'autoGeneratePropertiesWithJSONString'、'autoGeneratePropertiesWithJSONDict' or 'autoGeneratePropertiesWithJSONData' depend on what kind of your JSON data. It will return the result. If result is nil, there is something wrong, you can see log in Xcode console.
+```
++ (NSDictionary *)customNoteForKeyMapper {
+    return @{@"name" : @"The student's name.",
+             @"age" : @"The student's age.",
+             @"gender" : @"The student's gender. 0 is boy, 1 is girl.",
+             @"isStudent" : @"is he student?",
+             @"height" : @"The student's height. cm",
+             @"id" : @"The student's identifier",
+             };
+}
+```
+
+8. If you want to use your modification, such as 'readonly'. Implement 'customModificationForKeyMapper' in Person.m, return the mapper with NSDictionary (key is name, value is full modification).
+
+```
++ (NSDictionary *)customModificationForKeyMapper {
+    return @{@"age" : @"nonatomic, assign, readonly"};
+}
+
+```
+
+9. In School.m, repeat the above steps if necessary.
+
+10. Finally, call 'autoGeneratePropertiesWithJSONString'、'autoGeneratePropertiesWithJSONDict' or 'autoGeneratePropertiesWithJSONData' depend on what kind of your JSON data. It will return the result. If result is nil, there is something wrong, you can see log in Xcode console.
 
 ```
 NSString *result = [Person autoGeneratePropertiesWithJSONString:json];
@@ -138,7 +161,7 @@ Print:
 /* JYModel auto generate end, don't change this note! */
 ```
 
-9. You have to import or @class your custom class by yourself. Don't change the begin and end notes! If you do, I can't find and replace them if you generate them repeatedly!
+11. You have to import or @class your custom class by yourself. Don't change the begin and end notes! If you do, I can't find and replace them if you generate them repeatedly!
 
 
 # 中文介绍
@@ -213,7 +236,7 @@ NSObject+JYModelGeneration是一个能根据JSON自动生成属性声明代码�
 }
 ```
 
-5. 我需要为"school"字段自定义为'School'类. 在Person.m里实现 'customClassForKeyMapper', return映射表 (key 是JSON中的字段名, value 是类名).
+5. 我需要为"school"字段自定义为'School'类。 在Person.m里实现 'customClassForKeyMapper', return映射表 (key 是JSON中的字段名, value 是类名)。 支持枚举。
 
 ```
 + (NSDictionary *)customClassForKeyMapper {
@@ -229,9 +252,32 @@ NSObject+JYModelGeneration是一个能根据JSON自动生成属性声明代码�
 }
 ```
 
-7. 在 School.m中, 如果有必要的话，重复上述步骤。
+7. 如果你想添加注释, 在Person.m中实现 'customNoteForKeyMapper', return 映射表 (key 是JSON中的字段名, value 是注释)。
 
-8. 最后, 根据你JSON数据的类型，选择调用 'autoGeneratePropertiesWithJSONString'、'autoGeneratePropertiesWithJSONDict' 或 'autoGeneratePropertiesWithJSONData'. 将会返回最终生成的结果，如果返回nil，则某个地方发生了错误，具体原因可以在Xcode的控制台查看LOG。
+```
++ (NSDictionary *)customNoteForKeyMapper {
+    return @{@"name" : @"The student's name.",
+             @"age" : @"The student's age.",
+             @"gender" : @"The student's gender. 0 is boy, 1 is girl.",
+             @"isStudent" : @"is he student?",
+             @"height" : @"The student's height. cm",
+             @"id" : @"The student's identifier",
+             };
+}
+```
+
+8. 如果你想自己修饰属性，例如'readonly'. 在Person.m中实现 'customModificationForKeyMapper', return 映射表 (key 是JSON中的字段名, value 是完整的修饰符)。
+
+```
++ (NSDictionary *)customModificationForKeyMapper {
+    return @{@"age" : @"nonatomic, assign, readonly"};
+}
+
+```
+
+9. 在 School.m中, 如果有必要的话，重复上述步骤。
+
+10. 最后, 根据你JSON数据的类型，选择调用 'autoGeneratePropertiesWithJSONString'、'autoGeneratePropertiesWithJSONDict' 或 'autoGeneratePropertiesWithJSONData'. 将会返回最终生成的结果，如果返回nil，则某个地方发生了错误，具体原因可以在Xcode的控制台查看LOG。
 
 ```
 NSString *result = [Person autoGeneratePropertiesWithJSONString:json];
@@ -279,4 +325,4 @@ NSLog(@"%@", result);
 /* JYModel auto generate end, don't change this note! */
 ```
 
-9. 你必须手动导入自定义类的头文件或者 @class 类. 不要修改结果中头尾两行的注释！我需要根据这两行注释确定写入位置，实现重复写入时替换。
+11. 你必须手动导入自定义类的头文件或者 @class 类. 不要修改结果中头尾两行的注释！我需要根据这两行注释确定写入位置，实现重复写入时替换。
