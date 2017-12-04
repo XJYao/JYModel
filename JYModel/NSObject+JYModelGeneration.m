@@ -298,8 +298,8 @@
         [properties addObject:[self propertyWithName:propertyName clsName:clsName key:key isPoint:isPoint]];
     }
     
-    NSString *propertiesString = [properties componentsJoinedByString:@"\n"];
-    propertiesString = [NSString stringWithFormat:@"%@\n%@\n%@", kBeginNote, propertiesString, kEndNote];
+    NSString *propertiesString = [properties componentsJoinedByString:@"\n\n"];
+    propertiesString = [NSString stringWithFormat:@"%@\n\n%@\n\n%@", kBeginNote, propertiesString, kEndNote];
     
     if (!shouldAutoWriting || [self paramError:headFilePath cls:NSStringClass] || [self paramError:headFileContent cls:NSStringClass]) {
         return propertiesString;
@@ -362,7 +362,7 @@
 }
 
 + (NSString *)propertyWithName:(NSString *)name clsName:(NSString *)clsName key:(NSString *)key isPoint:(BOOL)isPoint {
-    return [NSString stringWithFormat:@"@property (nonatomic, %@) %@ %@%@;", key, clsName, isPoint ? @"*" : @"", name];
+    return [NSString stringWithFormat:@"/**\n<#Description#>\n*/\n@property (nonatomic, %@) %@ %@%@;", key, clsName, isPoint ? @"*" : @"", name];
 }
 
 + (id)subJSONObjectWithKey:(NSString *)key jsonDict:(NSDictionary *)jsonDict {
