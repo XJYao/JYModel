@@ -7,9 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		56FFEC601FD299510035E8C2 /* JYModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 56FFEC5F1FD299510035E8C2 /* JYModel.m */; };
-		56FFEC611FD299510035E8C2 /* JYModel.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 56FFEC5E1FD299510035E8C2 /* JYModel.h */; };
-		56FFEC691FD2996D0035E8C2 /* NSObject+JYModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 56FFEC681FD2996D0035E8C2 /* NSObject+JYModel.m */; };
+		56055E8C1FD51AB700B8FAF2 /* NSObject+JYModelGeneration.m in Sources */ = {isa = PBXBuildFile; fileRef = 56055E8B1FD51AB700B8FAF2 /* NSObject+JYModelGeneration.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -19,18 +17,16 @@
 			dstPath = "include/$(PRODUCT_NAME)";
 			dstSubfolderSpec = 16;
 			files = (
-				56FFEC611FD299510035E8C2 /* JYModel.h in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		56055E8A1FD51AB700B8FAF2 /* NSObject+JYModelGeneration.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSObject+JYModelGeneration.h"; sourceTree = "<group>"; };
+		56055E8B1FD51AB700B8FAF2 /* NSObject+JYModelGeneration.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSObject+JYModelGeneration.m"; sourceTree = "<group>"; };
+		56055E8D1FD51C3600B8FAF2 /* JYModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JYModel.h; sourceTree = "<group>"; };
 		56FFEC5B1FD299510035E8C2 /* libJYModel.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libJYModel.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		56FFEC5E1FD299510035E8C2 /* JYModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JYModel.h; sourceTree = "<group>"; };
-		56FFEC5F1FD299510035E8C2 /* JYModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JYModel.m; sourceTree = "<group>"; };
-		56FFEC671FD2996D0035E8C2 /* NSObject+JYModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSObject+JYModel.h"; sourceTree = "<group>"; };
-		56FFEC681FD2996D0035E8C2 /* NSObject+JYModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSObject+JYModel.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,10 +59,9 @@
 		56FFEC5D1FD299510035E8C2 /* JYModel */ = {
 			isa = PBXGroup;
 			children = (
-				56FFEC5E1FD299510035E8C2 /* JYModel.h */,
-				56FFEC5F1FD299510035E8C2 /* JYModel.m */,
-				56FFEC671FD2996D0035E8C2 /* NSObject+JYModel.h */,
-				56FFEC681FD2996D0035E8C2 /* NSObject+JYModel.m */,
+				56055E8D1FD51C3600B8FAF2 /* JYModel.h */,
+				56055E8A1FD51AB700B8FAF2 /* NSObject+JYModelGeneration.h */,
+				56055E8B1FD51AB700B8FAF2 /* NSObject+JYModelGeneration.m */,
 			);
 			path = JYModel;
 			sourceTree = "<group>";
@@ -128,8 +123,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				56FFEC691FD2996D0035E8C2 /* NSObject+JYModel.m in Sources */,
-				56FFEC601FD299510035E8C2 /* JYModel.m in Sources */,
+				56055E8C1FD51AB700B8FAF2 /* NSObject+JYModelGeneration.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

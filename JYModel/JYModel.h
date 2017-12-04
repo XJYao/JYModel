@@ -2,13 +2,17 @@
 //  JYModel.h
 //  JYModel
 //
-//  Created by XJY on 2017/12/2.
+//  Created by XJY on 2017/12/4.
 //  Copyright © 2017年 JY. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import "NSObject+JYModel.h"
+#ifndef JYModel_h
+#define JYModel_h
 
-@interface JYModel : NSObject
+#if __has_include(<JYModel/JYModel.h>)
 
-@end
+#import "NSObject+JYModelGeneration.h"
+
+#endif
+
+#endif /* JYModel_h */

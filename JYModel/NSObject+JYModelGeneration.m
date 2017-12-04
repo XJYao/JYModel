@@ -1,15 +1,15 @@
 //
-//  NSObject+JYModel.m
+//  NSObject+JYModelGeneration.m
 //  JYModel
 //
-//  Created by XJY on 2017/12/2.
+//  Created by XJY on 2017/12/4.
 //  Copyright © 2017年 JY. All rights reserved.
 //
 
-#import "NSObject+JYModel.h"
+#import "NSObject+JYModelGeneration.h"
 #import <objc/runtime.h>
 
-@implementation NSObject (JYModel)
+@implementation NSObject (JYModelGeneration)
 
 #ifdef DEBUG
 #define JYModelNSLog(...) NSLog(__VA_ARGS__)
@@ -56,7 +56,7 @@
     BOOL shouldAutoWriting = YES;
 #if TARGET_OS_SIMULATOR
     if ([selfClass respondsToSelector:@selector(shouldAutoWritingProperties)]) {
-        shouldAutoWriting = [(id<JYModel>)selfClass shouldAutoWritingProperties];
+        shouldAutoWriting = [(id<JYModelGeneration>)selfClass shouldAutoWritingProperties];
     }
 #else
     shouldAutoWriting = NO;
@@ -67,7 +67,7 @@
     NSString *headFileContent = nil;
     if (shouldAutoWriting) {
         if ([selfClass respondsToSelector:@selector(classHeadFilePath)]) {
-            headFilePath = [(id<JYModel>)selfClass classHeadFilePath];
+            headFilePath = [(id<JYModelGeneration>)selfClass classHeadFilePath];
         }
         if ([self paramError:headFilePath cls:NSStringClass]) {
             JYModelNSLog(@"JYModel ERROR: Head file path is nil or is not kind of NSString");
@@ -106,7 +106,7 @@
     NSString *startKeyPath = nil;
     //Get start key path.
     if ([selfClass respondsToSelector:@selector(startKeyPathFromJSONToGenerateProperties)]) {
-        startKeyPath = [(id<JYModel>)selfClass startKeyPathFromJSONToGenerateProperties];
+        startKeyPath = [(id<JYModelGeneration>)selfClass startKeyPathFromJSONToGenerateProperties];
     }
     if (![self paramError:startKeyPath cls:NSStringClass]) {
         NSArray *startKeys = [startKeyPath componentsSeparatedByString:@"->"];
@@ -157,7 +157,12 @@
     
     NSDictionary *customClassForKey = nil;
     if ([selfClass respondsToSelector:@selector(customClassForKeyMapper)]) {
-        customClassForKey = [(id<JYModel>)selfClass customClassForKeyMapper];
+        customClassForKey = [(id<JYModelGeneration>)selfClass customClassForKeyMapper];
+    }
+    
+    NSDictionary *customPropertyNameForKey = nil;
+    if ([selfClass respondsToSelector:@selector(customPropertyNameForKeyMapper)]) {
+        customPropertyNameForKey = [(id<JYModelGeneration>)selfClass customPropertyNameForKeyMapper];
     }
     
     NSMutableArray *properties = [[NSMutableArray alloc] init];
@@ -286,7 +291,11 @@
                 }
             }
         }
-        [properties addObject:[self propertyWithName:name clsName:clsName key:key isPoint:isPoint]];
+        NSString *propertyName = [customPropertyNameForKey objectForKey:name];
+        if ([self paramError:propertyName cls:NSStringClass]) {
+            propertyName = name;
+        }
+        [properties addObject:[self propertyWithName:propertyName clsName:clsName key:key isPoint:isPoint]];
     }
     
     NSString *propertiesString = [properties componentsJoinedByString:@"\n"];

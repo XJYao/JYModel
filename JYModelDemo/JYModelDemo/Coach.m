@@ -27,4 +27,8 @@
     return @{@"school" : @"School"};
 }
 
++ (NSDictionary *)customPropertyNameForKeyMapper {
+    return @{@"id" : @"identifier"};
+}
+
 @end
