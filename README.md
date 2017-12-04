@@ -122,7 +122,6 @@ Print:
 ## Cocoapods
 pod 'JYModel'
 
-pod 'JYModel'
 ## 手动安装
 pod 'JYModel'
 1. 下载所有文件
