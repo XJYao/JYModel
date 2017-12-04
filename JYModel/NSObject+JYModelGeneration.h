@@ -62,10 +62,10 @@
  CN: 如果需要用到的是JSON中某个字段下的数据，返回用"->"符号拼接出的该字段的路径。如果返回nil，则默认使用完整的JSON。
  EN: Let me know which data you want to use. Use "->" to separate keys. If return nil, use full JSON.
  
- Example: {"data" : {"list" : {"name" : "Tom"}}}
+ Example: {"data" : {"person" : {"name" : "Tom"}}}
  
- CN: 如果"{"name" : "Tom"}"是需要使用的部分，则返回@"data->list"即可。
- EN: If "{"name" : "Tom"}" is what you want, return @"data->list".
+ CN: 如果"{"name" : "Tom"}"是需要使用的部分，则返回@"data->person"即可。
+ EN: If "{"name" : "Tom"}" is what you want, return @"data->person".
  
  @return Start key path. Use "->" to separate keys.
  */

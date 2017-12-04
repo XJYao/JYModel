@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		56249BBB1FD3FE3500B02592 /* School.m in Sources */ = {isa = PBXBuildFile; fileRef = 56249BBA1FD3FE3500B02592 /* School.m */; };
-		56249BBE1FD40FD700B02592 /* City.m in Sources */ = {isa = PBXBuildFile; fileRef = 56249BBD1FD40FD700B02592 /* City.m */; };
 		56FFEC781FD29A980035E8C2 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 56FFEC771FD29A980035E8C2 /* AppDelegate.m */; };
 		56FFEC7B1FD29A980035E8C2 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 56FFEC7A1FD29A980035E8C2 /* ViewController.m */; };
 		56FFEC7E1FD29A980035E8C2 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 56FFEC7C1FD29A980035E8C2 /* Main.storyboard */; };
@@ -42,8 +41,6 @@
 		53387698B9E42D487AFD1546 /* Pods-JYModelDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JYModelDemo.release.xcconfig"; path = "Pods/Target Support Files/Pods-JYModelDemo/Pods-JYModelDemo.release.xcconfig"; sourceTree = "<group>"; };
 		56249BB91FD3FE3500B02592 /* School.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = School.h; sourceTree = "<group>"; };
 		56249BBA1FD3FE3500B02592 /* School.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = School.m; sourceTree = "<group>"; };
-		56249BBC1FD40FD700B02592 /* City.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = City.h; sourceTree = "<group>"; };
-		56249BBD1FD40FD700B02592 /* City.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = City.m; sourceTree = "<group>"; };
 		56FFEC731FD29A980035E8C2 /* JYModelDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JYModelDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		56FFEC761FD29A980035E8C2 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		56FFEC771FD29A980035E8C2 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -139,8 +136,6 @@
 				56FFECA91FD2AD2D0035E8C2 /* Person.m */,
 				56249BB91FD3FE3500B02592 /* School.h */,
 				56249BBA1FD3FE3500B02592 /* School.m */,
-				56249BBC1FD40FD700B02592 /* City.h */,
-				56249BBD1FD40FD700B02592 /* City.m */,
 			);
 			path = JYModelDemo;
 			sourceTree = "<group>";
@@ -360,7 +355,6 @@
 			files = (
 				56FFECAA1FD2AD2D0035E8C2 /* Person.m in Sources */,
 				56249BBB1FD3FE3500B02592 /* School.m in Sources */,
-				56249BBE1FD40FD700B02592 /* City.m in Sources */,
 				56FFEC7B1FD29A980035E8C2 /* ViewController.m in Sources */,
 				56FFEC861FD29A980035E8C2 /* main.m in Sources */,
 				56FFEC781FD29A980035E8C2 /* AppDelegate.m in Sources */,

@@ -20,7 +20,7 @@
 }
 
 + (NSString *)startKeyPathFromJSONToGenerateProperties {
-    return @"data->list";
+    return @"data->person";
 }
 
 + (NSDictionary *)customClassForKeyMapper {

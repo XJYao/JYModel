@@ -18,8 +18,4 @@
     return filePath;
 }
 
-+ (NSDictionary *)customClassForKeyMapper {
-    return @{@"city" : @"City"};
-}
-
 @end
