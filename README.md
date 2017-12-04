@@ -43,7 +43,7 @@ There is a JSON:
 }
 ```
 
-3. I need to tell it path of 'Person.h'. You can add a row in plist, set key to be "ProjectPath" and set value to be "$(SRCROOT)/$(PROJECT_NAME)". Then implement method 'classHeadFilePath' in Person.m to let it know where it is.
+3. I need to tell it path of 'Person.h'. You can add a row in plist, set key to be "ProjectPath" and set value to be "$(SRCROOT)/$(PROJECT_NAME)". Then implement method 'classHeadFilePath' in Person.m to let it know where it is. Of course, if you are not using simulator or you don't want it to write automatically, ignore this step.
 
 ```
 + (NSString *)classHeadFilePath {
@@ -139,7 +139,7 @@ NSObject+JYModelGeneration是一个能根据JSON自动生成属性声明代码�
 }
 ```
 
-3. 我需要告诉它Person.h的本地绝对路径。你可以在plist中添加一行，key设置为"ProjectPath"，value设置为"$(SRCROOT)/$(PROJECT_NAME)"。 然后实现方法 'classHeadFilePath' 返回文件路径。
+3. 我需要告诉它Person.h的本地绝对路径。你可以在plist中添加一行，key设置为"ProjectPath"，value设置为"$(SRCROOT)/$(PROJECT_NAME)"。 然后实现方法 'classHeadFilePath' 返回文件路径。当然，如果你使用的是真机，或者你不希望自动写入，可以忽略这一步。
 
 ```
 + (NSString *)classHeadFilePath {
