@@ -1,8 +1,17 @@
+# English Introduction
+
 # JYModel
 A model framework for iOS.
 
 # Installation
+
+## Cocoapods
 pod 'JYModel'
+
+## Manually
+1. Download all files.
+2. Add the source files to your Xcode project.
+3. import "JYModel/JYModel.h"
 
 # Usage
 
@@ -104,6 +113,23 @@ Print:
 
 
 # 中文介绍
+
+# JYModel
+一个iOS上使用的model框架
+
+# 安装说明
+
+## Cocoapods
+pod 'JYModel'
+
+pod 'JYModel'
+## 手动安装
+pod 'JYModel'
+1. 下载所有文件
+2. 添加源文件到工程中
+3. 在需要的地方导入 "JYModel/JYModel.h"
+
+# 用法
 ## NSObject+JYModelGeneration
 
 NSObject+JYModelGeneration是一个能根据JSON自动生成属性声明代码，并且在模拟器上支持自动写入到头文件的工具。如果你使用真机运行，必须自己手动复制工具生成并返回的字符串，然后粘贴到头文件中。
