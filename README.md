@@ -205,10 +205,10 @@ NSObject+JYModelGeneration是一个能根据JSON自动生成属性声明代码�
   } 
 }
 
-1. 让我们分析一下这个JSON。我需要一个 'Person'类 对应 "person"字段, 一个 'School'类 对应 "school"字段.
-  所以我创建了两个model：Person.h|m, School.h|m.
+1. 让我们分析一下这个JSON。我们需要一个 'Person'类 对应 "person"字段, 一个 'School'类 对应 "school"字段.
+  所以这里创建了两个model：Person.h|m, School.h|m.
 
-2. 但是我发现有价值的JSON是从 "person"字段开始的, 所以我需要在Person.m里实现方法 'startKeyPathFromJSONToGenerateProperties' 并使用 '->' 连接关键字形成路径，通过这个方法返回. 如果你没有实现这个方法，或者返回nil，则默认使用完整的JSON。
+2. 但是分析发现有价值的JSON是从 "person"字段开始的, 所以需要在Person.m里实现方法 'startKeyPathFromJSONToGenerateProperties' 并使用 '->' 连接关键字形成路径，通过这个方法返回. 如果你没有实现这个方法，或者返回nil，则默认使用完整的JSON。
 
 ```
 + (NSString *)startKeyPathFromJSONToGenerateProperties {
@@ -216,7 +216,7 @@ NSObject+JYModelGeneration是一个能根据JSON自动生成属性声明代码�
 }
 ```
 
-3. 我需要告诉它Person.h的本地绝对路径。你可以在plist中添加一行，key设置为"ProjectPath"，value设置为"$(SRCROOT)/$(PROJECT_NAME)"。 然后实现方法 'classHeadFilePath' 返回文件路径。当然，如果你使用的是真机，或者你不希望自动写入，可以忽略这一步。
+3. 如果要自动写入，必须告诉它Person.h的本地绝对路径。你可以在plist中添加一行，key设置为"ProjectPath"，value设置为"$(SRCROOT)/$(PROJECT_NAME)"。 然后实现方法 'classHeadFilePath' 返回文件路径。当然，如果你使用的是真机，或者你不希望自动写入，可以忽略这一步。
 
 ```
 + (NSString *)classHeadFilePath {
@@ -228,7 +228,7 @@ NSObject+JYModelGeneration是一个能根据JSON自动生成属性声明代码�
 }
 ```
 
-4. "id"在iOS中是一个关键字，我们不能用它作为属性名。 我需要用另一个名字来代替它, 例如 "identifier". 在Person.m中实现 'customPropertyNameForKeyMapper' 然后 return 映射表 (Key 是JSON中的字段名, value 是你自定义的新名字).
+4. "id"在iOS中是一个关键字，我们不能用它作为属性名，用另一个名字来代替它, 例如 "identifier". 在Person.m中实现 'customPropertyNameForKeyMapper' 然后 return 映射表 (Key 是JSON中的字段名, value 是你自定义的新名字).
 
 ```
 + (NSDictionary *)customPropertyNameForKeyMapper {
@@ -236,7 +236,7 @@ NSObject+JYModelGeneration是一个能根据JSON自动生成属性声明代码�
 }
 ```
 
-5. 我需要为"school"字段自定义为'School'类。 在Person.m里实现 'customClassForKeyMapper', return映射表 (key 是JSON中的字段名, value 是类名)。 支持枚举。
+5. 如果需要为"school"字段自定义为'School'类。 在Person.m里实现 'customClassForKeyMapper', return映射表 (key 是JSON中的字段名, value 是类名)。 支持枚举。
 
 ```
 + (NSDictionary *)customClassForKeyMapper {
