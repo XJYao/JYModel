@@ -21,7 +21,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     
-    NSString *json = @"{\"data\" : {\"person\" : {\"name\" : \"Tom\", \"age\" : 21, \"gender\" : 1, \"isStudent\" : true, \"height\" : 180.3, \"id\" : 14124897432759830, \"school\" : {\"schoolName\" : \"what?\", \"city\" : \"Beijing\"}}}}";
+    NSString *json = @"{\"data\" : {\"person\" : {\"name\" : \"Tom\", \"age\" : 21, \"gender\" : 1, \"isStudent\" : true, \"height\" : 180.3, \"id\" : 14124897432759830, \"school\" : {\"schoolName\" : \"what?\", \"city\" : \"Beijing\"}, \"lessons\" : [{\"lessonName\" : \"English\"}]}}}";
     
     NSString *result = [Person autoGeneratePropertiesWithJSONString:json];
     NSLog(@"%@", result);

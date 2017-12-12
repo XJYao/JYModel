@@ -25,7 +25,9 @@
 
 + (NSDictionary *)customClassForKeyMapper {
     return @{@"school" : @"School",
-             @"gender" : @"PersonGender"};
+             @"gender" : @"PersonGender",
+             @"lessons" : @"NSArray <NSDictionary *>"
+             };
 }
 
 + (NSDictionary *)customPropertyNameForKeyMapper {

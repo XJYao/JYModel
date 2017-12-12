@@ -269,7 +269,13 @@
             key = @"(nonatomic, copy)";
             isPoint = YES;
         } else {
-            Class cls = NSClassFromString(clsName);
+            NSString *tempClsName = clsName;
+            NSUInteger leftIndex = [tempClsName rangeOfString:@"<"].location;
+            if (leftIndex != NSNotFound && [tempClsName rangeOfString:@">"].location != NSNotFound) {
+                tempClsName = [tempClsName substringToIndex:leftIndex];
+                tempClsName = [tempClsName stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+            }
+            Class cls = NSClassFromString(tempClsName);
             if ([self isClassNull:cls]) {
                 key = @"(nonatomic, assign)";
                 isPoint = NO;

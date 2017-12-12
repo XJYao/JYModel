@@ -43,6 +43,11 @@ The student's age.
 @property (nonatomic, assign, readonly) NSInteger age;
 
 /**
+<#Description#>
+*/
+@property (nonatomic, strong) NSArray <NSDictionary *> *lessons;
+
+/**
 is he student?
 */
 @property (nonatomic, assign) BOOL isStudent;
