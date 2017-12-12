@@ -72,8 +72,8 @@
 + (NSString *)startKeyPathFromJSONToGenerateProperties;
 
 /**
- CN: 字段与自定义类的映射, 字段值是从使用的部分开始。支持枚举。
- EN: Key and custom class mapper. Key is start from the JSON be used. Support enum.
+ CN: 字段与自定义类的映射, 字段值是从使用的部分开始。支持枚举和基本类型。
+ EN: Key and custom class mapper. Key is start from the JSON be used. Support enum and basic type.
  
  Example: {"data" : {"list" : {"person" : {\"name\" : \"Tom\"}}}}
  
@@ -85,7 +85,7 @@
  
  @return CN: 映射表; EN: Mapper Table;
  */
-+ (NSDictionary *)customClassForKeyMapper;
++ (NSDictionary<NSString *, NSString *> *)customClassForKeyMapper;
 
 /**
  CN: 自定义属性名映射
@@ -99,7 +99,7 @@
  
  @return CN: 映射表; EN: Mapper Table;
  */
-+ (NSDictionary *)customPropertyNameForKeyMapper;
++ (NSDictionary<NSString *, NSString *> *)customPropertyNameForKeyMapper;
 
 /**
  CN: 是否需要添加注释模板，默认YES
@@ -121,7 +121,7 @@
  
  @return CN: 映射表; EN: Mapper Table;
  */
-+ (NSDictionary *)customNoteForKeyMapper;
++ (NSDictionary<NSString *, NSString *> *)customNoteForKeyMapper;
 
 /**
  CN: 属性修饰映射
@@ -135,6 +135,6 @@
  
  @return CN: 映射表; EN: Mapper Table;
  */
-+ (NSDictionary *)customModificationForKeyMapper;
++ (NSDictionary<NSString *, NSString *> *)customModificationForKeyMapper;
 
 @end
