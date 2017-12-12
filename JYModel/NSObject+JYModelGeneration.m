@@ -11,47 +11,48 @@
 
 @implementation NSObject (JYModelGeneration)
 
-#ifdef DEBUG
-#define JYModelNSLog(...) NSLog(__VA_ARGS__)
-#else
-#define JYModelNSLog(...)
-#endif
-
 #define kBeginNote @"/* JYModel auto generate begin, don't change this note! */"
 #define kEndNote @"/* JYModel auto generate end, don't change this note! */"
 
 + (NSString *)autoGeneratePropertiesWithJSONString:(NSString *)jsonString {
-    if ([self paramError:jsonString cls:[NSString class]]) {
-        JYModelNSLog(@"JYModel ERROR: JSON string is nil or is not kind of NSString");
+#ifdef DEBUG
+    if ([self isStringEmpty:jsonString]) {
+        NSLog(@"JYModel ERROR: JSON string is nil or is not kind of NSString");
         return nil;
     }
     return [self autoGeneratePropertiesWithJSONData:[jsonString dataUsingEncoding:NSUTF8StringEncoding]];
+#else
+    return nil;
+#endif
 }
 
-+ (NSString *)autoGeneratePropertiesWithJSONDict:(NSDictionary *)jsonDict {
-    if ([self paramError:jsonDict cls:[NSDictionary class]]) {
-        JYModelNSLog(@"JYModel ERROR: JSON dict is nil or is not kind of NSDictionary");
++ (NSString *)autoGeneratePropertiesWithJSONData:(NSData *)data {
+#ifdef DEBUG
+    if ([self isDataEmpty:data]) {
+        NSLog(@"JYModel ERROR: JSON data is nil or is not kind of NSData");
         return nil;
     }
     
     NSError *jsonError = nil;
-    NSData *data = [NSJSONSerialization dataWithJSONObject:jsonDict options:0 error:&jsonError];
-    if ([self paramError:data cls:[NSData class]] || ![self isObjectNull:jsonError]) {
-        JYModelNSLog(@"JYModel ERROR: JSON is wrong with reason: %@", jsonError.localizedDescription);
+    id jsonObject = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&jsonError];
+    if ([self isObjectNull:jsonObject] || ![self isObjectNull:jsonError]) {
+        NSLog(@"JYModel ERROR: There is something wrong for parsing JSON with reason: %@", jsonError.localizedDescription);
         return nil;
     }
-    return [self autoGeneratePropertiesWithJSONData:data];
+    return [self autoGeneratePropertiesWithJSONDict:jsonObject];
+#else
+    return nil;
+#endif
 }
 
-+ (NSString *)autoGeneratePropertiesWithJSONData:(NSData *)data {
-    Class NSDataClass = [NSData class];
-    if ([self paramError:data cls:NSDataClass]) {
-        JYModelNSLog(@"JYModel ERROR: JSON data is nil or is not kind of NSData");
++ (NSString *)autoGeneratePropertiesWithJSONDict:(NSDictionary *)jsonDict {
+#ifdef DEBUG
+    if ([self isDictionaryEmpty:jsonDict]) {
+        NSLog(@"JYModel ERROR: JSON is nil or is not king of NSDictionary");
         return nil;
     }
     
     Class selfClass = [self class];
-    Class NSStringClass = [NSString class];
     
     BOOL shouldAutoWriting = YES;
 #if TARGET_OS_SIMULATOR
@@ -60,7 +61,7 @@
     }
 #else
     shouldAutoWriting = NO;
-    JYModelNSLog(@"JYModel ERROR: If you want to write to head file automatically, please use simulator!");
+    NSLog(@"JYModel WARN: If you want to write to head file automatically, please use simulator!");
 #endif
     
     NSString *headFilePath = nil;
@@ -69,49 +70,33 @@
         if ([selfClass respondsToSelector:@selector(classHeadFilePath)]) {
             headFilePath = [(id<JYModelGeneration>)selfClass classHeadFilePath];
         }
-        if ([self paramError:headFilePath cls:NSStringClass]) {
-            JYModelNSLog(@"JYModel ERROR: Head file path is nil or is not kind of NSString");
+        if ([self isStringEmpty:headFilePath]) {
+            NSLog(@"JYModel ERROR: Head file path is nil or is not kind of NSString");
             shouldAutoWriting = NO;
         } else if (![[NSFileManager defaultManager] fileExistsAtPath:headFilePath]) {
-            JYModelNSLog(@"JYModel ERROR: Head file path is not exist");
+            NSLog(@"JYModel ERROR: Head file path is not exist");
             shouldAutoWriting = NO;
         } else if (![[NSFileManager defaultManager] isWritableFileAtPath:headFilePath]) {
-            JYModelNSLog(@"JYModel ERROR: Head file is not writable");
+            NSLog(@"JYModel ERROR: Head file is not writable");
             shouldAutoWriting = NO;
         }
         NSError *readFileError = nil;
         headFileContent = [NSString stringWithContentsOfFile:headFilePath encoding:NSUTF8StringEncoding error:&readFileError];
-        if ([self paramError:headFileContent cls:NSStringClass] || ![self isObjectNull:readFileError]) {
-            JYModelNSLog(@"JYModel ERROR: There is something wrong for reading head file with reason: %@", readFileError.localizedDescription);
+        if ([self isStringEmpty:headFileContent] || ![self isObjectNull:readFileError]) {
+            NSLog(@"JYModel ERROR: There is something wrong for reading head file with reason: %@", readFileError.localizedDescription);
             shouldAutoWriting = NO;
         }
     }
-    
-    NSError *jsonError = nil;
-    id jsonObject = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&jsonError];
-    if ([self isObjectNull:jsonObject] || ![self isObjectNull:jsonError]) {
-        JYModelNSLog(@"JYModel ERROR: There is something wrong for parsing JSON with reason: %@", jsonError.localizedDescription);
-        return nil;
-    }
-    Class NSDictionaryClass = [NSDictionary class];
-    if (![jsonObject isKindOfClass:NSDictionaryClass]) {
-        JYModelNSLog(@"JYModel ERROR: JSON is not king of NSDictionary");
-        return nil;
-    }
-    
-    NSDictionary *jsonDict = (NSDictionary *)jsonObject;
-    
-    Class NSArrayClass = [NSArray class];
     
     NSString *startKeyPath = nil;
     //Get start key path.
     if ([selfClass respondsToSelector:@selector(startKeyPathFromJSONToGenerateProperties)]) {
         startKeyPath = [(id<JYModelGeneration>)selfClass startKeyPathFromJSONToGenerateProperties];
     }
-    if (![self paramError:startKeyPath cls:NSStringClass]) {
+    if (![self isStringEmpty:startKeyPath]) {
         NSArray *startKeys = [startKeyPath componentsSeparatedByString:@"->"];
         if (startKeys.count == 0) {
-            JYModelNSLog(@"JYModel ERROR: I don't know which key you want to start with");
+            NSLog(@"JYModel ERROR: I don't know which key you want to start with");
             return nil;
         }
         id subJSONObject = (id)jsonDict;
@@ -120,13 +105,13 @@
             NSString *key = [startKeys objectAtIndex:i];
             subJSONObject = [self subJSONObjectWithKey:key jsonDict:subJSONObject];
             
-            if ([self paramError:subJSONObject cls:NSDictionaryClass]) {
+            if ([self isDictionaryEmpty:subJSONObject]) {
                 if (i != startKeys.count - 1) {
-                    JYModelNSLog(@"JYModel ERROR: The key path that you want to start is wrong");
+                    NSLog(@"JYModel ERROR: The key path that you want to start is wrong");
                     return nil;
                 }
-                if ([self paramError:subJSONObject cls:NSArrayClass]) {
-                    JYModelNSLog(@"JYModel ERROR: The key path that you want to start is wrong");
+                if ([self isArrayEmpty:subJSONObject]) {
+                    NSLog(@"JYModel ERROR: The key path that you want to start is wrong");
                     return nil;
                 }
                 //Maybe it's an array.
@@ -136,14 +121,14 @@
         if (isJSONArray) {
             BOOL found = NO;
             for (id sub in subJSONObject) {
-                if (![self paramError:sub cls:NSDictionaryClass]) {
+                if (![self isDictionaryEmpty:sub]) {
                     jsonDict = (NSDictionary *)sub;
                     found = YES;
                     break;
                 }
             }
             if (!found) {
-                JYModelNSLog(@"JYModel ERROR: The key path that you want to start is wrong");
+                NSLog(@"JYModel ERROR: The key path that you want to start is wrong");
                 return nil;
             }
         } else {
@@ -152,8 +137,6 @@
     }
     
     //Generate properties.
-    Class NSNumberClass = [NSNumber class];
-    NSArray *allPropertyNames = jsonDict.allKeys;
     
     NSDictionary *customClassForKey = nil;
     if ([selfClass respondsToSelector:@selector(customClassForKeyMapper)]) {
@@ -163,6 +146,11 @@
     NSDictionary *customPropertyNameForKey = nil;
     if ([selfClass respondsToSelector:@selector(customPropertyNameForKeyMapper)]) {
         customPropertyNameForKey = [(id<JYModelGeneration>)selfClass customPropertyNameForKeyMapper];
+    }
+    
+    BOOL shouldAddNoteTemplates = YES;
+    if ([selfClass respondsToSelector:@selector(shouldAddNoteTemplates)]) {
+        shouldAddNoteTemplates = [(id<JYModelGeneration>)selfClass shouldAddNoteTemplates];
     }
     
     NSDictionary *customNoteForKey = nil;
@@ -175,139 +163,126 @@
         customModificationForKey = [(id<JYModelGeneration>)selfClass customModificationForKeyMapper];
     }
     
+    Class NSStringClass = [NSString class];
+    Class NSArrayClass = [NSArray class];
+    Class NSDictionaryClass = [NSDictionary class];
+    Class NSNumberClass = [NSNumber class];
+    NSArray *allPropertyNames = jsonDict.allKeys;
+    
     NSMutableArray *properties = [[NSMutableArray alloc] init];
     for (NSString *name in allPropertyNames) {
-        if ([self paramError:name cls:NSStringClass]) {
+        if ([self isStringEmpty:name]) {
             continue;
         }
         id value = [jsonDict objectForKey:name];
         
-        NSString *key = @"strong";
+        //class
         NSString *clsName = @"id";
-        BOOL isPoint = NO;
-        if (![self isObjectNull:value]) {
-            if ([value isKindOfClass:NSStringClass]) {
-                key = @"copy";
-                clsName = @"NSString";
-                isPoint = YES;
-            } else if ([value isKindOfClass:NSArrayClass]) {
-                key = @"strong";
-                clsName = @"NSArray";
-                isPoint = YES;
-            } else if ([value isKindOfClass:NSDictionaryClass]) {
-                key = @"strong";
-                clsName = @"NSDictionary";
-                isPoint = YES;
-                
-                NSString *customClass = [customClassForKey objectForKey:name];
-                if (![self paramError:customClass cls:NSStringClass]) {
-                    [NSClassFromString(customClass) autoGeneratePropertiesWithJSONDict:value];
-                }
-            } else if ([value isKindOfClass:NSNumberClass]) {
-                const char *type = ((NSNumber *)value).objCType;
-                
-                switch (*type) {
-                    case _C_CHR: { //char
-                        key = @"assign";
-                        clsName = @"BOOL";
-                        isPoint = NO;
-                    } break;
-                        
-                    case _C_INT: { //int32
-                        key = @"assign";
-                        clsName = @"int";
-                        isPoint = NO;
-                    } break;
-                        
-                    case _C_SHT: { //short
-                        key = @"assign";
-                        clsName = @"short";
-                        isPoint = NO;
-                    } break;
-                        
-                    case _C_LNG: { //long
-                        key = @"assign";
-                        clsName = @"long";
-                        isPoint = NO;
-                    } break;
-                        
-                    case _C_LNG_LNG: { //long long / int64
-                        key = @"assign";
-                        clsName = @"NSInteger";
-                        isPoint = NO;
-                    } break;
-                        
-                    case _C_UCHR: { //unsigned char / unsigned int8
-                        key = @"assign";
-                        clsName = @"unsigned char";
-                        isPoint = NO;
-                    } break;
-                        
-                    case _C_UINT: { //unsigned int
-                        key = @"assign";
-                        clsName = @"unsigned int";
-                        isPoint = NO;
-                    } break;
-                        
-                    case _C_USHT: { //unsigned short
-                        key = @"assign";
-                        clsName = @"unsigned short";
-                        isPoint = NO;
-                    } break;
-                        
-                    case _C_ULNG: { //unsigned long
-                        key = @"assign";
-                        clsName = @"unsigned long";
-                        isPoint = NO;
-                    } break;
-                        
-                    case _C_ULNG_LNG: { //unsigned long long / unsigned int64
-                        key = @"assign";
-                        clsName = @"NSUInteger";
-                        isPoint = NO;
-                    } break;
-                        
-                    case _C_FLT: { //float
-                        key = @"assign";
-                        clsName = @"float";
-                        isPoint = NO;
-                    } break;
-                        
-                    case _C_DBL: { //double
-                        key = @"assign";
-                        clsName = @"double";
-                        isPoint = NO;
-                    } break;
-                        
-                    case 'D': { //long double
-                        key = @"assign";
-                        clsName = @"CGFloat";
-                        isPoint = NO;
-                    } break;
-                        
-                    case _C_BOOL: { //a C++ bool or a C99 _Bool
-                        key = @"assign";
-                        clsName = @"BOOL";
-                        isPoint = NO;
-                    } break;
-                    default: {
-                        key = @"strong";
-                        clsName = @"NSNumber";
-                        isPoint = YES;
-                    } break;
+        NSString *customClass = [customClassForKey objectForKey:name];
+        if ([self isStringEmpty:customClass]) {
+            if (![self isObjectNull:value]) {
+                if ([value isKindOfClass:NSStringClass]) {
+                    clsName = @"NSString";
+                } else if ([value isKindOfClass:NSArrayClass]) {
+                    clsName = @"NSArray";
+                } else if ([value isKindOfClass:NSDictionaryClass]) {
+                    clsName = @"NSDictionary";
+                } else if ([value isKindOfClass:NSNumberClass]) {
+                    const char *type = ((NSNumber *)value).objCType;
+                    
+                    switch (*type) {
+                        case _C_CHR: { //char
+                            clsName = @"BOOL";
+                        } break;
+                            
+                        case _C_INT: { //int32
+                            clsName = @"int";
+                        } break;
+                            
+                        case _C_SHT: { //short
+                            clsName = @"short";
+                        } break;
+                            
+                        case _C_LNG: { //long
+                            clsName = @"long";
+                        } break;
+                            
+                        case _C_LNG_LNG: { //long long / int64
+                            clsName = @"NSInteger";
+                        } break;
+                            
+                        case _C_UCHR: { //unsigned char / unsigned int8
+                            clsName = @"unsigned char";
+                        } break;
+                            
+                        case _C_UINT: { //unsigned int
+                            clsName = @"unsigned int";
+                        } break;
+                            
+                        case _C_USHT: { //unsigned short
+                            clsName = @"unsigned short";
+                        } break;
+                            
+                        case _C_ULNG: { //unsigned long
+                            clsName = @"unsigned long";
+                        } break;
+                            
+                        case _C_ULNG_LNG: { //unsigned long long / unsigned int64
+                            clsName = @"NSUInteger";
+                        } break;
+                            
+                        case _C_FLT: { //float
+                            clsName = @"float";
+                        } break;
+                            
+                        case _C_DBL: { //double
+                            clsName = @"double";
+                        } break;
+                            
+                        case 'D': { //long double
+                            clsName = @"CGFloat";
+                        } break;
+                            
+                        case _C_BOOL: { //a C++ bool or a C99 _Bool
+                            clsName = @"BOOL";
+                        } break;
+                        default: {
+                            clsName = @"NSNumber";
+                        } break;
+                    }
                 }
             }
+        } else {
+            clsName = customClass;
+            
+            if (![self isObjectNull:value] && [value isKindOfClass:NSDictionaryClass]) {
+                [NSClassFromString(customClass) autoGeneratePropertiesWithJSONDict:value];
+            }
         }
-        //name
-        NSString *propertyName = [customPropertyNameForKey objectForKey:name];
-        if ([self paramError:propertyName cls:NSStringClass]) {
-            propertyName = name;
+        NSString *key = nil;
+        BOOL isPoint = NO;
+        
+        if ([clsName isEqualToString:@"id"]) {
+            key = @"(nonatomic, strong)";
+            isPoint = NO;
+        } else if ([clsName isEqualToString:@"NSString"]) {
+            key = @"(nonatomic, copy)";
+            isPoint = YES;
+        } else {
+            Class cls = NSClassFromString(clsName);
+            if ([self isClassNull:cls]) {
+                key = @"(nonatomic, assign)";
+                isPoint = NO;
+            } else {
+                key = @"(nonatomic, strong)";
+                isPoint = YES;
+            }
         }
         
-        //class
-        NSString *customClass = [customClassForKey objectForKey:name];
-        if (![self paramError:customClass cls:NSStringClass]) {
-            clsName = customClass;
+        //name
+        NSString *propertyName = [customPropertyNameForKey objectForKey:name];
+        if ([self isStringEmpty:propertyName]) {
+            propertyName = name;
         }
         
         //note
@@ -315,19 +290,17 @@
         
         //modification
         NSString *customModification = [customModificationForKey objectForKey:name];
-        if (![self paramError:customModification cls:NSStringClass]) {
+        if (![self isStringEmpty:customModification]) {
             key = [NSString stringWithFormat:@"(%@)", customModification];
-        } else {
-            key = [NSString stringWithFormat:@"(nonatomic, %@)", key];
         }
         
-        [properties addObject:[self propertyWithName:propertyName clsName:clsName key:key isPoint:isPoint note:customNote]];
+        [properties addObject:[self propertyWithName:propertyName clsName:clsName key:key isPoint:isPoint note:customNote shouldAddNoteTemplates:shouldAddNoteTemplates]];
     }
     
     NSString *propertiesString = [properties componentsJoinedByString:@"\n\n"];
     propertiesString = [NSString stringWithFormat:@"%@\n\n%@\n\n%@", kBeginNote, propertiesString, kEndNote];
     
-    if (!shouldAutoWriting || [self paramError:headFilePath cls:NSStringClass] || [self paramError:headFileContent cls:NSStringClass]) {
+    if (!shouldAutoWriting || [self isStringEmpty:headFilePath] || [self isStringEmpty:headFileContent]) {
         return propertiesString;
     }
     
@@ -364,7 +337,7 @@
         }
     }
     if (interfaceIndexInSelfClass == NSNotFound) {
-        JYModelNSLog(@"JYModel ERROR: I don't know where I can write, I can't find %@ Interface.", NSStringFromClass(selfClass));
+        NSLog(@"JYModel ERROR: I don't know where I can write, I can't find %@ Interface.", NSStringFromClass(selfClass));
         return propertiesString;
     }
     NSInteger insertIndex = interfaceIndexInSelfClass + 1;
@@ -382,54 +355,84 @@
     NSData *newFileData = [[components componentsJoinedByString:@"\n"] dataUsingEncoding:NSUTF8StringEncoding];
     BOOL writeSuccess = [newFileData writeToURL:[NSURL fileURLWithPath:headFilePath] atomically:YES];
     if (!writeSuccess) {
-        JYModelNSLog(@"JYModel ERROR: There is something wrong for writing to head file.");
+        NSLog(@"JYModel ERROR: There is something wrong for writing to head file.");
     }
     return propertiesString;
+#else
+    return nil;
+#endif
 }
 
-+ (NSString *)propertyWithName:(NSString *)name clsName:(NSString *)clsName key:(NSString *)key isPoint:(BOOL)isPoint note:(NSString *)note {
-    if ([self paramError:note cls:[NSString class]]) {
-        note = @"/**\n<#Description#>\n*/";
++ (NSString *)propertyWithName:(NSString *)name clsName:(NSString *)clsName key:(NSString *)key isPoint:(BOOL)isPoint note:(NSString *)note shouldAddNoteTemplates:(BOOL)shouldAddNoteTemplates {
+    if ([self isStringEmpty:note]) {
+        if (shouldAddNoteTemplates) {
+            note = @"/**\n<#Description#>\n*/\n";
+        } else {
+            note = @"";
+        }
     } else {
-        note = [NSString stringWithFormat:@"/**\n%@\n*/", note];
+        note = [NSString stringWithFormat:@"/**\n%@\n*/\n", note];
     }
-    return [NSString stringWithFormat:@"%@\n@property %@ %@ %@%@;", note, key, clsName, isPoint ? @"*" : @"", name];
+    return [NSString stringWithFormat:@"%@@property %@ %@ %@%@;", note, key, clsName, isPoint ? @"*" : @"", name];
 }
 
 + (id)subJSONObjectWithKey:(NSString *)key jsonDict:(NSDictionary *)jsonDict {
-    if ([self paramError:key cls:[NSString class]]) {
-        return nil;
-    }
-    if ([self paramError:jsonDict cls:[NSDictionary class]]) {
+    if ([self isStringEmpty:key] || [self isDictionaryEmpty:jsonDict]) {
         return nil;
     }
     return [jsonDict objectForKey:key];
 }
 
-+ (BOOL)paramError:(id)param cls:(Class)cls {
-    if ([self isObjectNull:param]) {
-        return YES;
-    }
-    if (!cls || cls == Nil) {
-        return YES;
-    }
-    if (![param isKindOfClass:cls]) {
-        return YES;
-    }
-    if ([param isKindOfClass:[NSString class]]) {
-        return ((NSString *)param).length == 0;
-    } else if ([param isKindOfClass:[NSData class]]) {
-        return ((NSData *)param).length == 0;
-    } else if ([param isKindOfClass:[NSDictionary class]]) {
-        return ((NSDictionary *)param).count == 0;
-    } else if ([param isKindOfClass:[NSArray class]]) {
-        return ((NSArray *)param).count == 0;
-    }
-    return YES;
-}
-
 + (BOOL)isObjectNull:(id)obj {
     if (!obj || obj == nil || obj == Nil || obj == NULL || [obj isEqual:[NSNull null]] || obj == (id)kCFNull) {
+        return YES;
+    } else {
+        return NO;
+    }
+}
+
++ (BOOL)isStringEmpty:(NSString *)str {
+    if ([self isObjectNull:str]) {
+        return YES;
+    }
+    if (![str isKindOfClass:[NSString class]]) {
+        return YES;
+    }
+    return str.length == 0;
+}
+
++ (BOOL)isArrayEmpty:(NSArray *)array {
+    if ([self isObjectNull:array]) {
+        return YES;
+    }
+    if (![array isKindOfClass:[NSArray class]]) {
+        return YES;
+    }
+    return array.count == 0;
+}
+
++ (BOOL)isDictionaryEmpty:(NSDictionary *)dictionary {
+    if ([self isObjectNull:dictionary]) {
+        return YES;
+    }
+    if (![dictionary isKindOfClass:[NSDictionary class]]) {
+        return YES;
+    }
+    return dictionary.count == 0;
+}
+
++ (BOOL)isDataEmpty:(NSData *)data {
+    if ([self isObjectNull:data]) {
+        return YES;
+    }
+    if (![data isKindOfClass:[NSData class]]) {
+        return YES;
+    }
+    return data.length == 0;
+}
+
++ (BOOL)isClassNull:(Class)cls {
+    if (!cls || cls == Nil) {
         return YES;
     } else {
         return NO;

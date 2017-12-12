@@ -18,4 +18,8 @@
     return filePath;
 }
 
++ (BOOL)shouldAddNoteTemplates {
+    return NO;
+}
+
 @end

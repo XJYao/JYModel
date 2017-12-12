@@ -102,6 +102,14 @@
 + (NSDictionary *)customPropertyNameForKeyMapper;
 
 /**
+ CN: 是否需要添加注释模板，默认YES
+ EN: If you want note templates, return YES. Default is YES.
+ 
+ @return Do you want?
+ */
++ (BOOL)shouldAddNoteTemplates;
+
+/**
  CN: 属性注释映射
  EN: Custom note for key.
  
