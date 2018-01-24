@@ -41,6 +41,8 @@
              @"isStudent" : @"is he student?",
              @"height" : @"The student's height. cm",
              @"id" : @"The student's identifier",
+             @"school" : @"The student's school",
+             @"lessons" : @"The student's lessons"
              };
 }
 

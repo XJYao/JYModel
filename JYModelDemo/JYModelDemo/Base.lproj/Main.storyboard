@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13527"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -20,11 +20,40 @@
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ihd-pX-RzB">
+                                <rect key="frame" x="10" y="200" width="355" height="417"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="10"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0yJ-hm-iJO">
+                                <rect key="frame" x="10" y="108" width="355" height="82"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="10"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="Ihd-pX-RzB" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="10" id="6j7-fi-biu"/>
+                            <constraint firstAttribute="trailing" secondItem="0yJ-hm-iJO" secondAttribute="trailing" constant="10" id="9hB-vQ-Vh7"/>
+                            <constraint firstItem="Ihd-pX-RzB" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" constant="200" id="Mbo-bq-JFb"/>
+                            <constraint firstItem="0yJ-hm-iJO" firstAttribute="top" secondItem="Ncb-jK-82z" secondAttribute="bottom" constant="88" id="dNp-65-a3Q"/>
+                            <constraint firstAttribute="trailing" secondItem="Ihd-pX-RzB" secondAttribute="trailing" constant="10" id="nYg-ua-hGA"/>
+                            <constraint firstItem="Ihd-pX-RzB" firstAttribute="top" secondItem="0yJ-hm-iJO" secondAttribute="bottom" constant="10" id="wdF-WX-ZdC"/>
+                            <constraint firstItem="0yJ-hm-iJO" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="10" id="yQH-Ql-2nz"/>
+                            <constraint firstAttribute="bottom" secondItem="Ihd-pX-RzB" secondAttribute="bottom" constant="50" id="zzT-hO-Lw6"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="jsonLabel" destination="0yJ-hm-iJO" id="luH-vU-cqD"/>
+                        <outlet property="resultLabel" destination="Ihd-pX-RzB" id="xVu-BM-8CN"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="117.59999999999999" y="118.29085457271366"/>
         </scene>
     </scenes>
 </document>
