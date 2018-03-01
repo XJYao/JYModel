@@ -34,20 +34,4 @@
     return @{@"id" : @"identifier"};
 }
 
-+ (NSDictionary *)customNoteForKeyMapper {
-    return @{@"name" : @"The student's name.",
-             @"age" : @"The student's age.",
-             @"gender" : @"The student's gender. 0 is boy, 1 is girl.",
-             @"isStudent" : @"is he student?",
-             @"height" : @"The student's height. cm",
-             @"id" : @"The student's identifier",
-             @"school" : @"The student's school",
-             @"lessons" : @"The student's lessons"
-             };
-}
-
-+ (NSDictionary *)customModificationForKeyMapper {
-    return @{@"age" : @"nonatomic, assign, readonly"};
-}
-
 @end

@@ -11,9 +11,6 @@
 
 @implementation NSObject (JYModelGeneration)
 
-#define kBeginNote @"/* JYModel auto generate begin, don't change this note! */"
-#define kEndNote @"/* JYModel auto generate end, don't change this note! */"
-
 + (NSString *)autoGeneratePropertiesWithJSONString:(NSString *)jsonString {
 #ifdef DEBUG
     if ([self isStringEmpty:jsonString]) {
@@ -148,19 +145,11 @@
         customPropertyNameForKey = [(id<JYModelGeneration>)selfClass customPropertyNameForKeyMapper];
     }
     
-    BOOL shouldAddNoteTemplates = YES;
-    if ([selfClass respondsToSelector:@selector(shouldAddNoteTemplates)]) {
-        shouldAddNoteTemplates = [(id<JYModelGeneration>)selfClass shouldAddNoteTemplates];
-    }
+    shouldAutoWriting = shouldAutoWriting && ![self isStringEmpty:headFilePath] && ![self isStringEmpty:headFileContent];
     
-    NSDictionary *customNoteForKey = nil;
-    if ([selfClass respondsToSelector:@selector(customNoteForKeyMapper)]) {
-        customNoteForKey = [(id<JYModelGeneration>)selfClass customNoteForKeyMapper];
-    }
-    
-    NSDictionary *customModificationForKey = nil;
-    if ([selfClass respondsToSelector:@selector(customModificationForKeyMapper)]) {
-        customModificationForKey = [(id<JYModelGeneration>)selfClass customModificationForKeyMapper];
+    NSMutableArray *components = nil;
+    if (shouldAutoWriting) {
+        components = [headFileContent componentsSeparatedByString:@"\n"].mutableCopy;
     }
     
     Class NSStringClass = [NSString class];
@@ -259,14 +248,14 @@
                 [NSClassFromString(customClass) autoGeneratePropertiesWithJSONDict:value];
             }
         }
-        NSString *key = nil;
+        NSArray *keys = nil;
         BOOL isPoint = NO;
         
         if ([clsName isEqualToString:@"id"]) {
-            key = @"(nonatomic, strong)";
+            keys = @[@"nonatomic", @"strong"];
             isPoint = NO;
         } else if ([clsName isEqualToString:@"NSString"]) {
-            key = @"(nonatomic, copy)";
+            keys = @[@"nonatomic", @"copy"];
             isPoint = YES;
         } else {
             NSString *tempClsName = clsName;
@@ -277,10 +266,10 @@
             }
             Class cls = NSClassFromString(tempClsName);
             if ([self isClassNull:cls]) {
-                key = @"(nonatomic, assign)";
+                keys = @[@"nonatomic", @"assign"];
                 isPoint = NO;
             } else {
-                key = @"(nonatomic, strong)";
+                keys = @[@"nonatomic", @"strong"];
                 isPoint = YES;
             }
         }
@@ -291,95 +280,82 @@
             propertyName = name;
         }
         
-        //note
-        NSString *customNote = [customNoteForKey objectForKey:name];
+        NSString *propertyString = [self propertyWithName:propertyName clsName:clsName keys:keys isPoint:isPoint];
+        [properties addObject:propertyString];
         
-        //modification
-        NSString *customModification = [customModificationForKey objectForKey:name];
-        if (![self isStringEmpty:customModification]) {
-            key = [NSString stringWithFormat:@"(%@)", customModification];
-        }
-        
-        [properties addObject:[self propertyWithName:propertyName clsName:clsName key:key isPoint:isPoint note:customNote shouldAddNoteTemplates:shouldAddNoteTemplates]];
-    }
-    
-    NSString *propertiesString = [properties componentsJoinedByString:@"\n\n"];
-    propertiesString = [NSString stringWithFormat:@"%@\n\n%@\n\n%@", kBeginNote, propertiesString, kEndNote];
-    
-    if (!shouldAutoWriting || [self isStringEmpty:headFilePath] || [self isStringEmpty:headFileContent]) {
-        return propertiesString;
-    }
-    
-    NSMutableArray *components = [headFileContent componentsSeparatedByString:@"\n"].mutableCopy;
-    
-    //Find interface index, @end index, old NOTE index.
-    //Old properties should be deleted.
-    NSInteger interfaceIndexInSelfClass = NSNotFound;
-    NSInteger endIndexInSelfClass = NSNotFound;
-    NSInteger beginNoteIndexInSelfClass = NSNotFound;
-    NSInteger endNoteIndexInSelfClass = NSNotFound;
-    
-    for (NSInteger i = 0; i < components.count; i ++) {
-        NSString *contentForRow = [components objectAtIndex:i];
-        if (contentForRow.length == 0) {
+        if (!shouldAutoWriting) {
             continue;
         }
-        if (interfaceIndexInSelfClass != NSNotFound) {
-            if (endIndexInSelfClass == NSNotFound) {
-                if (beginNoteIndexInSelfClass == NSNotFound && [contentForRow rangeOfString:kBeginNote].location != NSNotFound) {
-                    beginNoteIndexInSelfClass = i;
-                } else if (endNoteIndexInSelfClass == NSNotFound && [contentForRow rangeOfString:kEndNote].location != NSNotFound) {
-                    endNoteIndexInSelfClass = i;
-                } else if ([contentForRow rangeOfString:@"@end"].location != NSNotFound) {
-                    endIndexInSelfClass = i;
+        
+        //Find interface index, @end index
+        NSInteger interfaceIndexInSelfClass = NSNotFound;
+        NSInteger endIndexInSelfClass = NSNotFound;
+        
+        for (NSInteger i = 0; i < components.count; i ++) {
+            NSString *contentForRow = [components objectAtIndex:i];
+            if ([self isStringEmpty:contentForRow]) {
+                continue;
+            }
+            if (interfaceIndexInSelfClass != NSNotFound) {
+                if (endIndexInSelfClass == NSNotFound) {
+                    if ([contentForRow rangeOfString:@"@end"].location != NSNotFound) {
+                        endIndexInSelfClass = i;
+                    }
                 }
+            }
+            
+            if ([contentForRow rangeOfString:@"@interface"].location != NSNotFound &&
+                [contentForRow rangeOfString:NSStringFromClass(selfClass)].location != NSNotFound &&
+                [contentForRow rangeOfString:@":"].location != NSNotFound) {
+                interfaceIndexInSelfClass = i;
             }
         }
         
-        if ([contentForRow rangeOfString:@"@interface"].location != NSNotFound &&
-            [contentForRow rangeOfString:NSStringFromClass(selfClass)].location != NSNotFound &&
-            [contentForRow rangeOfString:@":"].location != NSNotFound) {
-            interfaceIndexInSelfClass = i;
+        if (interfaceIndexInSelfClass == NSNotFound || endIndexInSelfClass == NSNotFound) {
+            continue;
+        }
+        
+        BOOL found = NO;
+        for (NSInteger i = interfaceIndexInSelfClass + 1; i < endIndexInSelfClass; i ++) {
+            NSString *contentForRow = [components objectAtIndex:i];
+            if ([self isStringEmpty:contentForRow]) {
+                continue;
+            }
+            if ([contentForRow rangeOfString:@"@property"].location == NSNotFound) {
+                continue;
+            }
+            if ([contentForRow rangeOfString:[NSString stringWithFormat:@" %@%@;", isPoint ? @"*" : @"", propertyName]].location == NSNotFound && [contentForRow rangeOfString:[NSString stringWithFormat:@" %@;", propertyName]].location == NSNotFound) {
+                continue;
+            }
+            found = YES;
+            
+            [components replaceObjectAtIndex:i withObject:propertyString];
+            break;
+        }
+        if (!found) {
+            [components insertObject:[NSString stringWithFormat:@"%@", propertyString] atIndex:endIndexInSelfClass];
+            [components insertObject:@"" atIndex:endIndexInSelfClass + 1];
         }
     }
-    if (interfaceIndexInSelfClass == NSNotFound) {
-        NSLog(@"JYModel ERROR: I don't know where I can write, I can't find %@ Interface.", NSStringFromClass(selfClass));
-        return propertiesString;
-    }
-    NSInteger insertIndex = interfaceIndexInSelfClass + 1;
     
-    //Delete old properties
-    if (beginNoteIndexInSelfClass != NSNotFound &&
-        endNoteIndexInSelfClass != NSNotFound) {
-        [components removeObjectsInRange:NSMakeRange(beginNoteIndexInSelfClass, endNoteIndexInSelfClass - beginNoteIndexInSelfClass + 1)];
+    if (shouldAutoWriting) {
+        //Write file content to head file.
+        NSData *newFileData = [[components componentsJoinedByString:@"\n"] dataUsingEncoding:NSUTF8StringEncoding];
+        BOOL writeSuccess = [newFileData writeToURL:[NSURL fileURLWithPath:headFilePath] atomically:YES];
+        if (!writeSuccess) {
+            NSLog(@"JYModel ERROR: There is something wrong for writing to head file.");
+        }
     }
-    
-    //Update file content.
-    [components insertObject:propertiesString atIndex:insertIndex];
-    
-    //Write file content to head file.
-    NSData *newFileData = [[components componentsJoinedByString:@"\n"] dataUsingEncoding:NSUTF8StringEncoding];
-    BOOL writeSuccess = [newFileData writeToURL:[NSURL fileURLWithPath:headFilePath] atomically:YES];
-    if (!writeSuccess) {
-        NSLog(@"JYModel ERROR: There is something wrong for writing to head file.");
-    }
+
+    NSString *propertiesString = [properties componentsJoinedByString:@"\n\n"];
     return propertiesString;
 #else
     return nil;
 #endif
 }
 
-+ (NSString *)propertyWithName:(NSString *)name clsName:(NSString *)clsName key:(NSString *)key isPoint:(BOOL)isPoint note:(NSString *)note shouldAddNoteTemplates:(BOOL)shouldAddNoteTemplates {
-    if ([self isStringEmpty:note]) {
-        if (shouldAddNoteTemplates) {
-            note = @"/**\n<#Description#>\n*/\n";
-        } else {
-            note = @"";
-        }
-    } else {
-        note = [NSString stringWithFormat:@"/**\n%@\n*/\n", note];
-    }
-    return [NSString stringWithFormat:@"%@@property %@ %@ %@%@;", note, key, clsName, isPoint ? @"*" : @"", name];
++ (NSString *)propertyWithName:(NSString *)name clsName:(NSString *)clsName keys:(NSArray *)keys isPoint:(BOOL)isPoint {
+    return [NSString stringWithFormat:@"@property (%@) %@ %@%@;", [keys componentsJoinedByString:@", "], clsName, isPoint ? @"*" : @"", name];
 }
 
 + (id)subJSONObjectWithKey:(NSString *)key jsonDict:(NSDictionary *)jsonDict {

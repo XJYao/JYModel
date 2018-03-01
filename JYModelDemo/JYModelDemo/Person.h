@@ -15,49 +15,22 @@ typedef NS_ENUM(NSUInteger, PersonGender) {
 };
 
 @interface Person : NSObject
-/* JYModel auto generate begin, don't change this note! */
 
-/**
-The student's gender. 0 is boy, 1 is girl.
-*/
 @property (nonatomic, assign) PersonGender gender;
 
-/**
-The student's height. cm
-*/
 @property (nonatomic, assign) double height;
 
-/**
-<#Description#>
-*/
 @property (nonatomic, strong) School *school;
 
-/**
-The student's identifier
-*/
 @property (nonatomic, assign) NSInteger identifier;
 
-/**
-The student's age.
-*/
-@property (nonatomic, assign, readonly) NSInteger age;
+@property (nonatomic, assign) NSInteger age;
 
-/**
-<#Description#>
-*/
 @property (nonatomic, strong) NSArray <NSDictionary *> *lessons;
 
-/**
-is he student?
-*/
 @property (nonatomic, assign) BOOL isStudent;
 
-/**
-The student's name.
-*/
 @property (nonatomic, copy) NSString *name;
-
-/* JYModel auto generate end, don't change this note! */
 
 @end
 

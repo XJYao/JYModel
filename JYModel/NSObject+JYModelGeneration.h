@@ -101,40 +101,4 @@
  */
 + (NSDictionary<NSString *, NSString *> *)customPropertyNameForKeyMapper;
 
-/**
- CN: 是否需要添加注释模板，默认YES
- EN: If you want note templates, return YES. Default is YES.
- 
- @return Do you want?
- */
-+ (BOOL)shouldAddNoteTemplates;
-
-/**
- CN: 属性注释映射
- EN: Custom note for key.
- 
- Example: {\"name\" : \"Tom\"}
-
- + (NSDictionary *)customNoteForKeyMapper {
- return @{@"name", @"The student's name."};
- }
- 
- @return CN: 映射表; EN: Mapper Table;
- */
-+ (NSDictionary<NSString *, NSString *> *)customNoteForKeyMapper;
-
-/**
- CN: 属性修饰映射
- EN: Custom modification for key.
- 
- Example: {\"name\" : \"Tom\"}
- 
- + (NSDictionary *)customModificationForKeyMapper {
- return @{@"name", @"nonatomic, copy"};
- }
- 
- @return CN: 映射表; EN: Mapper Table;
- */
-+ (NSDictionary<NSString *, NSString *> *)customModificationForKeyMapper;
-
 @end
