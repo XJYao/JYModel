@@ -8,6 +8,22 @@
 
 #import <Foundation/Foundation.h>
 
+/**
+ CN: 一句宏即可实现头文件路径的获取，参数传入相对工程根目录的子路径。请在Info.plist中添加如下键值对
+ EN: Get head file path, parameter is subpaths relative to the project root director. Please add this key-value to Info.plist file.
+ 
+ <key>ProjectPath</key>
+ <string>$(SRCROOT)/$(PROJECT_NAME)</string>
+ */
+#define JYModel_HeadFilePath(subPath) \
++ (NSString *)classHeadFilePath { \
+NSString *infoPlistPath = [[NSBundle mainBundle]pathForResource:@"Info.plist" ofType:nil]; \
+NSDictionary *infoDict = [NSDictionary dictionaryWithContentsOfFile:infoPlistPath]; \
+NSString *projectPath = [infoDict objectForKey:@"ProjectPath"]; \
+NSString *filePath = [[projectPath stringByAppendingPathComponent:subPath] stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.h", NSStringFromClass([self class])]]; \
+return filePath; \
+}
+
 @interface NSObject (JYModelGeneration)
 
 /**
