@@ -1,127 +1,3 @@
-# English Introduction
-
-# JYModel
-A model framework for iOS.
-
-# Installation
-
-## Cocoapods
-pod 'JYModel'
-
-## Manually
-1. Download all files.
-2. Add the source files to your Xcode project.
-3. import "JYModel/JYModel.h"
-
-# Usage
-
-## NSObject+JYModelGeneration
-
-You can use it to generate properties code automatically from JSON and write to head file automatically on simulator if you want.
-(If you want to write automatically, please use simulator!)
-
-Let's see how to use it.
-
-There is a JSON:
-{
-  "data" : {
-    "person" : {
-      "name" : "Tom", 
-      "age" : 21, 
-      "gender" : 1, 
-      "isStudent" : true, 
-      "height" : 180.3, 
-      "id" : 14124897432759830, 
-      "school" : {
-        "schoolName" : "what?", 
-        "city" : "Beijing"
-      }
-    }
-  } 
-}
-
-1. Let's analyze this JSON. I need a 'Person' Class for "person", a 'School' Class for "school".
-
-  So I create two models: Person.h|m, School.h|m.
-
-2. But I find the valuable JSON is from "person", so I need to implement method 'startKeyPathFromJSONToGenerateProperties' in Person.m and use '->' to let it know the key path. If you are not implementing this method or return nil, it will use full JSON.
-
-```
-+ (NSString *)startKeyPathFromJSONToGenerateProperties {
-    return @"data->person";
-}
-```
-
-3. I need to tell it path of 'Person.h'. You can add a row in plist, set key to be "ProjectPath" and set value to be "$(SRCROOT)/$(PROJECT_NAME)". Then implement method 'classHeadFilePath' in Person.m to let it know where it is. Of course, if you are not using simulator or you don't want it to write automatically, ignore this step.
-
-```
-+ (NSString *)classHeadFilePath {
-    NSString *infoPlistPath = [[NSBundle mainBundle]pathForResource:@"Info.plist" ofType:nil];
-    NSDictionary *infoDict = [NSDictionary dictionaryWithContentsOfFile:infoPlistPath];
-    NSString *projectPath = [infoDict objectForKey:@"ProjectPath"];
-    NSString *filePath = [NSString stringWithFormat:@"%@/%@.h", projectPath, NSStringFromClass([self class])];
-    return filePath;
-}
-```
-
-4. The "id" is keyword for iOS system. We can't use it as property name. I need to use another name to instead of it, such as "identifier". So implement 'customPropertyNameForKeyMapper' in Person.m and return the mapper with NSDictionary (Key is name from JSON, value is name what you want).
-
-```
-+ (NSDictionary *)customPropertyNameForKeyMapper {
-    return @{@"id" : @"identifier"};
-}
-```
-
-5. I need to let it know I want to use 'School' class for "school". Implement 'customClassForKeyMapper' in Person.m, return the mapper with NSDictionary (key is name, value is class name). It supports enum.
-
-```
-+ (NSDictionary *)customClassForKeyMapper {
-    return @{@"school" : @"School"};
-}
-```
-
-6. If you want to copy and paste properties by youself. No problem, implement 'shouldAutoWritingProperties' in Person.m, return NO, it won't write properties to head file automatically. Of course, if you are not using simulator, you must copy and paste by yourself.
-
-```
-+ (BOOL)shouldAutoWritingProperties {
-    return NO;
-}
-```
-
-7. In School.m, repeat the above steps if necessary.
-
-8. Finally, call 'autoGeneratePropertiesWithJSONString'、'autoGeneratePropertiesWithJSONDict' or 'autoGeneratePropertiesWithJSONData' depend on what kind of your JSON data. It will return the result. If result is nil, there is something wrong, you can see log in Xcode console.
-
-```
-NSString *result = [Person autoGeneratePropertiesWithJSONString:json];
-NSLog(@"%@", result);
-```
-Print:
-```
-@property (nonatomic, assign) NSInteger gender;
-
-@property (nonatomic, assign) double height;
-
-@property (nonatomic, strong) School *school;
-
-@property (nonatomic, assign) NSInteger identifier;
-
-@property (nonatomic, assign) NSInteger age;
-
-@property (nonatomic, assign) BOOL isStudent;
-
-@property (nonatomic, copy) NSString *name;
-
-```
-
-9. You have to import or @class your custom class by yourself. 
-
-
-# 中文介绍
-
-# JYModel
-一个iOS上使用的model框架
-
 # 安装说明
 
 ## Cocoapods
@@ -158,7 +34,7 @@ NSObject+JYModelGeneration是一个能根据JSON自动生成属性声明代码�
   } 
 }
 
-1. 让我们分析一下这个JSON。我们需要一个 'Person'类 对应 "person"字段, 一个 'School'类 对应 "school"字段.
+1. 分析一下这个JSON。我们需要一个 'Person'类 对应 "person"字段, 一个 'School'类 对应 "school"字段.
   所以这里创建了两个model：Person.h|m, School.h|m.
 
 2. 但是分析发现有价值的JSON是从 "person"字段开始的, 所以需要在Person.m里实现方法 'startKeyPathFromJSONToGenerateProperties' 并使用 '->' 连接关键字形成路径，通过这个方法返回. 如果你没有实现这个方法，或者返回nil，则默认使用完整的JSON。
@@ -231,4 +107,4 @@ NSLog(@"%@", result);
 
 ```
 
-9. 你必须手动导入自定义类的头文件或者 @class 类.
+9. 必须手动导入自定义类的头文件或者 @class 类.
